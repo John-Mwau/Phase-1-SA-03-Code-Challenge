@@ -7,7 +7,7 @@ async function getCharacters() {
       const response = await fetch(ApiVariable);
       const characters = await response.json();
 // selecting the elements in the "index.html" file
-      const characterList = document.querySelector('.character-list');
+      const characterList = document.querySelector('#character-bar');
       characterList.innerHTML = '';
 // creating a callback function 
       characters.forEach((character) => {
