@@ -14,16 +14,17 @@ html {
     padding: 0.5em;
   }
   
-  #character-bar {
+  #bar {
     height: 15vh;
-    background: rgb(49, 109, 179);
+    background: hsla(301, 100%, 43%, 1);
     display: flex;
+    flex-direction: row;
     justify-content: space-around;
     align-items: center;
     padding-bottom: 3vh;
   }
   
-  #character-bar span {
+  #bar span {
     padding: 1%;
     height: 80%;
     width: 8vw;

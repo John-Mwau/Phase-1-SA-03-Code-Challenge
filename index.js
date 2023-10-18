@@ -1,17 +1,17 @@
 
-  // getting character data through the element id
+  // Get html element via getElementbyId
 const characterData = () => {
-  const characters = document.getElementById('data')
+  const characters = document.getElementById('bar')
 
   characters.innerHTML = '';
-//fetch the candidates info from API and display it
-let AP1_URL = 'https://my-json-server.typicode.com/martinwakaba/code-challenge-2/characters'
+//fetch the animals info from Json API and display them
+let API_URL = 'http://localhost:3000/characters'
   fetch(API_URL)
-  .then(response => response.json())//translating into something thats readable
+  .then(response => response.json())// Translate into readbale data
 
   .then(data => {
       console.log(data);
-      //now lets create list of our characters and for rendering our DOM
+      //Create animal list for our characters and for rendering our DOM
       data.forEach(candidate =>{
           const characterList = document.createElement('li')
           characterList.textContent = candidate.name;
