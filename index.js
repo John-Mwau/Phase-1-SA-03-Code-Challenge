@@ -1,74 +1,55 @@
 
-  // create a variable to contain the json file
-const ApiVariable = 'http://localhost:3000/characters';
-// creating a function to fetch the data
-async function getCharacters() {
-  try {
-      const response = await fetch(ApiVariable);
-      const characters = await response.json();
-// selecting the elements in the "index.html" file
-      const characterList = document.querySelector('#character-bar');
-      characterList.innerHTML = '';
-// creating a callback function 
-      characters.forEach((character) => {
-        const characterName = document.createElement('div');
-        characterName.classList.add('character-name');
+  // getting character data through the element id
+const characterData = () => {
+  const characters = document.getElementById('data')
 
-        characterName.innerHTML = `
-            <h2 data-id="${character.id}">${character.name}</h2>
-        `;
-//adding an eventListener 
-        characterName.querySelector('h2').addEventListener('click', () => {
-            showCharacterDetails(character);
-        });
+  characters.innerHTML = '';
+//fetch the candidates info from API and display it
+let AP1_URL = 'https://my-json-server.typicode.com/martinwakaba/code-challenge-2/characters'
+  fetch(API_URL)
+  .then(response => response.json())//translating into something thats readable
 
-        characterList.appendChild(characterName);
-    });
-} catch (error) {
-    console.error('Error fetching characters:', error);
+  .then(data => {
+      console.log(data);
+      //now lets create list of our characters and for rendering our DOM
+      data.forEach(candidate =>{
+          const characterList = document.createElement('li')
+          characterList.textContent = candidate.name;
+
+         // click event for each candidate when clicked
+          characterList.addEventListener('click', () => {
+              console.log(`${candidate.name}: chosen`)
+              //
+              const characterImage = document.getElementById('image')
+              const characterName = document.getElementById('name')
+              const characterVotes = document.getElementById('vote-count')
+
+              characterImage.src = candidate.image;
+              characterName.innerText = candidate.name;
+              characterVotes.innerText = candidate.votes;
+
+              let currentVote = parseInt(characterVotes.textContent, 10)
+
+              const votesForm = document.getElementById('votes-form')
+              const votes = document.getElementById('votes')
+
+              //submit event for the votes
+              votesForm.addEventListener('submit', (event) =>{
+                  event.preventDefault()// stops reset to default
+                  let newVote = parseInt(votes.value, 10)
+                  currentVote = currentVote + newVote;
+                  characterVotes.textContent = currentVote;
+
+
+              })
+
+          })
+          // appendChild adds a node to the end of the list of children of a specified parent node
+          characters.appendChild(characterList)
+
+      })
+
+  })
 }
-}
-
-function showCharacterDetails(character) {
-const characterDetails = document.querySelector('.character-details');
-characterDetails.innerHTML = `
-    <img src="${character.image}" alt="${character.name}">
-    <h2>${character.name}</h2>
-    <p>Votes: ${character.votes}</p>
-    <button class="vote-btn" data-id="${character.id}">Vote</button>
-`;
-
-characterDetails.style.display = 'block';
-
-// creating a function for the vote button 
-const voteButton = characterDetails.querySelector('.vote-btn');
-voteButton.addEventListener('click', () => {
-    voteForCharacter(character);
-});
-}
-
-async function voteForCharacter(character) {
-character.votes++;
-
-
-const characterDetails = document.querySelector('.character-details');
-characterDetails.innerHTML = `
-    <img src="${character.image}" alt="${character.name}">
-    <h2>${character.name}</h2>
-    <p>Votes: ${character.votes}</p>
-    <button class="vote-btn" data-id="${character.id}">Vote</button>
-`;
-
-
-characterDetails.style.display = 'block';
-
-fetch(API_URL + `/${character.id}`, {
-    method: 'PUT',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(character),
-});
-}
-
-fetchCharacters();
+//fires when index.js loads - before DOMContentLoaded is triggered
+document.addEventListener('DOMContentLoaded', characterData)
