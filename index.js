@@ -11,7 +11,7 @@ let API_URL = 'http://localhost:3000/characters'
 
   .then(data => {
       console.log(data);
-      //Create animal list for our characters and for rendering our DOM
+      //Create characters via the DOM to be shown on the browser.
       data.forEach(candidate =>{
           const characterList = document.createElement('li')
           characterList.textContent = candidate.name;
@@ -44,12 +44,12 @@ let API_URL = 'http://localhost:3000/characters'
               })
 
           })
-          // appendChild adds a node to the end of the list of children of a specified parent node
+          // append child
           characters.appendChild(characterList)
 
       })
 
   })
 }
-//fires when index.js loads - before DOMContentLoaded is triggered
+//shows content to the user when invoked
 document.addEventListener('DOMContentLoaded', characterData)
