@@ -1,44 +1,74 @@
-document.addEventListener("DOMContentLoaded", (e) => {
-    const navContent = document.getElementById("character-bar");
-    function getCharacterDetails() {
-      return fetch("http://localhost:3000/characters")
-        .then((res) => res.json())
-        .then((characters) => {
-          // console.log(characters);
-          characters.forEach((character) => {
-            const characterView = document.createElement("span");
-            navContent.appendChild(characterView);
-            characterView.id = character.id;//change character view
-            characterView.innerText = character.name;
-  
-            characterView.addEventListener("click", (e) => {
-              // e.preventDefault();
-              const characterName = document.getElementById("name");
-              characterName.innerText = character.name;
-              const characterImage = document.getElementById("image");
-              characterImage.src = character.image;
-  
-              const currentVotes = document.getElementById("vote-count");
-              currentVotes.innerText = character.votes;
-  
-              // form for submitting votes ,sets votes input value to be displayed
-              const form = document.getElementById("votes-form");
-              form.addEventListener("submit", (e) => {
-                e.preventDefault();
-                const votes = document.getElementById("votes").value;
-                if (isNaN(votes) === false) {
-                  currentVotes.innerText = votes;
-                  // form.reset();
-                } else {
-                  alert("Votes can only be in numbers");
-                  form.reset();
-                }
-                console.log(votes);
-  
-              });
-            });
-          });
+
+  // create a variable to contain the json file
+const ApiVariable = 'http://localhost:3000/characters';
+// creating a function to fetch the data
+async function getCharacters() {
+  try {
+      const response = await fetch(ApiVariable);
+      const characters = await response.json();
+// selecting the elements in the "index.html" file
+      const characterList = document.querySelector('.character-list');
+      characterList.innerHTML = '';
+// creating a callback function 
+      characters.forEach((character) => {
+        const characterName = document.createElement('div');
+        characterName.classList.add('character-name');
+
+        characterName.innerHTML = `
+            <h2 data-id="${character.id}">${character.name}</h2>
+        `;
+//adding an eventListener 
+        characterName.querySelector('h2').addEventListener('click', () => {
+            showCharacterDetails(character);
         });
-    }
-    getCharacterDetails();
-  });
+
+        characterList.appendChild(characterName);
+    });
+} catch (error) {
+    console.error('Error fetching characters:', error);
+}
+}
+
+function showCharacterDetails(character) {
+const characterDetails = document.querySelector('.character-details');
+characterDetails.innerHTML = `
+    <img src="${character.image}" alt="${character.name}">
+    <h2>${character.name}</h2>
+    <p>Votes: ${character.votes}</p>
+    <button class="vote-btn" data-id="${character.id}">Vote</button>
+`;
+
+characterDetails.style.display = 'block';
+
+// creating a function for the vote button 
+const voteButton = characterDetails.querySelector('.vote-btn');
+voteButton.addEventListener('click', () => {
+    voteForCharacter(character);
+});
+}
+
+async function voteForCharacter(character) {
+character.votes++;
+
+
+const characterDetails = document.querySelector('.character-details');
+characterDetails.innerHTML = `
+    <img src="${character.image}" alt="${character.name}">
+    <h2>${character.name}</h2>
+    <p>Votes: ${character.votes}</p>
+    <button class="vote-btn" data-id="${character.id}">Vote</button>
+`;
+
+
+characterDetails.style.display = 'block';
+
+fetch(API_URL + `/${character.id}`, {
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(character),
+});
+}
+
+fetchCharacters();
